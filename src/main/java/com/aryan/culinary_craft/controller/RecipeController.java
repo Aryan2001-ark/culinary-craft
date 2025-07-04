@@ -36,6 +36,14 @@ public class RecipeController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/recipeName/{name}")
+    public ResponseEntity<List<Recipe>> getRecipesByName(@PathVariable String name) {
+        List<Recipe> recipes = recipeService.getRecipesByName(name);
+        if (recipes.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(recipes);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecipe(@PathVariable String id) {
