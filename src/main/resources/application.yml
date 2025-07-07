@@ -1,8 +1,8 @@
 spring:
-  application:
-    name: culinary-craft
   data:
     mongodb:
-      uri: mongodb://localhost:27017/culinaryCraftDB
+      uri: mongodb+srv://<username>:<password>@cluster0.zrjsm9j.mongodb.net/culinaryCraftDB?retryWrites=true&w=majority
+  application:
+    name: culinary-craft
 server:
-  port: 8080
+  port: 8081
