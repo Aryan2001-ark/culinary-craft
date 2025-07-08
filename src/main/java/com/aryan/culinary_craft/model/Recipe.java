@@ -1,7 +1,6 @@
 package com.aryan.culinary_craft.model;
 
 import com.aryan.culinary_craft.util.IdGenerator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
