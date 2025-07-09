@@ -18,8 +18,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register").permitAll()
-                        .requestMatchers("/api/health").permitAll()
+                        .requestMatchers("/culinary-craft/users/register").permitAll()
+                        .requestMatchers("/culinary-craft/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(httpBasic -> {

@@ -1,5 +1,7 @@
 package com.aryan.culinary_craft.controller;
 
+import com.aryan.culinary_craft.constants.UserConstants;
+import com.aryan.culinary_craft.dto.DeleteUserRequest;
 import com.aryan.culinary_craft.model.User;
 import com.aryan.culinary_craft.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/culinary-craft/users")
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -47,7 +49,7 @@ public class UserController {
             return ResponseEntity.badRequest().body("Username already exists. Please choose another.");
         }
 
-        boolean shouldEncrypt = false; // You control this
+        boolean shouldEncrypt = true; // You control this
         String finalPassword = shouldEncrypt
                 ? passwordEncoder.encode(userRequest.getPassword())
                 : userRequest.getPassword();
@@ -62,5 +64,29 @@ public class UserController {
         userRepository.save(user);
         logger.info("User registered successfully: {}", userRequest.getUsername());
         return ResponseEntity.ok("You are successfully registered to our system.");
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(@RequestParam String usernameToDelete, @RequestParam String requesterUsername) {
+        logger.info("Received delete user request for username: {} by requester: {}", usernameToDelete, requesterUsername);
+        // Find the requester in the database
+        User requester = userRepository.findByUsername(requesterUsername).orElse(null);
+        if (requester == null) {
+            logger.warn("Delete failed: Requester {} not found", requesterUsername);
+            return ResponseEntity.status(403).body("Requester not found.");
+        }
+        if (!UserConstants.ADMIN.equals(requester.getRole())) {
+            logger.warn("Delete failed: Requester {} is not ADMIN", requesterUsername);
+            return ResponseEntity.status(403).body("Only ADMIN users can delete users.");
+        }
+        // Find the user to delete
+        User userToDelete = userRepository.findByUsername(usernameToDelete).orElse(null);
+        if (userToDelete == null) {
+            logger.warn("Delete failed: User {} not found", usernameToDelete);
+            return ResponseEntity.badRequest().body("User to delete not found.");
+        }
+        userRepository.delete(userToDelete);
+        logger.info("User {} deleted by ADMIN {}", usernameToDelete, requesterUsername);
+        return ResponseEntity.ok("User deleted successfully.");
     }
 }
