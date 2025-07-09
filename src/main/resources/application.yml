@@ -1,7 +1,7 @@
 spring:
-  data:
-    mongodb:
-      # uri is now in application-local.yml for local development
+  profiles:
+    active: local
+    # uri is now in application-local.yml for local development
   application:
     name: culinary-craft
 server:
